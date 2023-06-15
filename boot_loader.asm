@@ -47,11 +47,24 @@ pop bx
 mov al, bl
 int 0x10
 
+call print_nl
+
+mov bx, text
+call print
+
+
 loop:
     jmp loop
 
+%include "print.asm"
+
+
 data_in_adress:
     db "X"
+
+text:
+    db '--- My Name is Ayman ----', 0
+
 
 times 510-($-$$) db 0
 dw 0xaa55

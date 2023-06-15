@@ -1,6 +1,6 @@
 NAME = mini_os.bin
 
-ASM_FILES = boot_loader.asm
+ASM_FILES = boot_loader.asm print.asm
 OBJ_DIR = obj/
 
 ASM_OBJ = $(addprefix $(OBJ_DIR), $(ASM_FILES:.asm=.o))
