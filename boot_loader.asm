@@ -21,14 +21,36 @@ int 0x10
 mov al, 'S'
 int 0x10
 
-mov al, [the_secret]
+mov al, [data_in_adress]
+int 0x10
+
+mov al, ' '
+int 0x10
+
+
+mov bp, 0x8000
+mov sp, bp
+
+push 'I'
+push 'J'
+push 'K'
+
+pop bx
+mov al, bl
+int 0x10
+
+pop bx
+mov al, bl
+int 0x10
+
+pop bx
+mov al, bl
 int 0x10
 
 loop:
     jmp loop
 
-
-the_secret:
+data_in_adress:
     db "X"
 
 times 510-($-$$) db 0

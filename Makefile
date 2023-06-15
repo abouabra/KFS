@@ -14,7 +14,7 @@ $(OBJ_DIR)%.o: %.asm
 	nasm -f bin $< -o $@ 
 
 $(NAME): asm
-	qemu-system-i386 $(NAME)
+	qemu-system-i386 -drive format=raw,file=$(NAME)
 
 clean:
 	rm -rf $(OBJ_DIR)
