@@ -1,6 +1,6 @@
 NAME = mini_os.bin
 
-ASM_FILES = boot_loader.asm print.asm
+ASM_FILES = Boot_Loader.asm Print_ASCII.asm Load_Disk.asm
 OBJ_DIR = obj/
 
 ASM_OBJ = $(addprefix $(OBJ_DIR), $(ASM_FILES:.asm=.o))
@@ -14,7 +14,7 @@ $(OBJ_DIR)%.o: %.asm
 	nasm -f bin $< -o $@ 
 
 $(NAME): asm
-	qemu-system-i386 -drive format=raw,file=$(NAME)
+	qemu-system-i386 -fda $(NAME)
 
 clean:
 	rm -rf $(OBJ_DIR)
