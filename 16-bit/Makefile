@@ -1,9 +1,6 @@
-NAME = My_OS.bin
+NAME = mini_os.bin
 
-ASM_FILES = Boot_Loader.asm Print_ASCII.asm Print_ASCII_32bit.asm\
-			32bit-gdt.asm 32bit-switch.asm
-
-ASM_DIR = ASM/
+ASM_FILES = Boot_Loader.asm Print_ASCII.asm Load_Disk.asm
 OBJ_DIR = obj/
 
 ASM_OBJ = $(addprefix $(OBJ_DIR), $(ASM_FILES:.asm=.o))
@@ -12,8 +9,7 @@ all: $(NAME)
 
 asm: $(ASM_OBJ)
 	cat $(ASM_OBJ) > $(NAME)
-
-$(OBJ_DIR)%.o: $(ASM_DIR)%.asm
+$(OBJ_DIR)%.o: %.asm
 	mkdir -p $(OBJ_DIR)
 	nasm -f bin $< -o $@ 
 
