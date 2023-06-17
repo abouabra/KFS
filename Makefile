@@ -1,23 +1,31 @@
-NAME = My_OS.bin
+NAME = Mini_OS.bin
 
-ASM_FILES = Boot_Loader.asm Print_ASCII.asm Print_ASCII_32bit.asm\
-			32bit-gdt.asm 32bit-switch.asm
-
-ASM_DIR = ASM/
+# boot = ASM/Boot_Loader.asm
+# entry = kernel_entry.asm
+SRC = kernel.c
+Kernel_DIR = Kernel/
 OBJ_DIR = obj/
 
-ASM_OBJ = $(addprefix $(OBJ_DIR), $(ASM_FILES:.asm=.o))
+C_OBJ = $(addprefix $(OBJ_DIR), $(SRC:.c=.o))
 
 all: $(NAME)
 
-asm: $(ASM_OBJ)
-	cat $(ASM_OBJ) > $(NAME)
+kernel: $(C_OBJ) asm
+	i386-elf-ld -o obj/kernel.bin -Ttext 0x1000 obj/kernel_entry.o $(C_OBJ) --oformat binary
 
-$(OBJ_DIR)%.o: $(ASM_DIR)%.asm
-	mkdir -p $(OBJ_DIR)
-	nasm -f bin $< -o $@ 
+$(OBJ_DIR)%.o: $(Kernel_DIR)%.c
+	mkdir -p obj/
+	i386-elf-gcc -ffreestanding -c $< -o $@
 
-$(NAME): asm
+asm: ASM/Boot_Loader.asm ASM/kernel_entry.asm
+	mkdir -p obj/
+	nasm -f bin ASM/Boot_Loader.asm -o obj/Boot_Loader.o
+	nasm -f elf ASM/kernel_entry.asm -o obj/kernel_entry.o
+
+# cat $(ASM_OBJ) > $(NAME)
+
+$(NAME): kernel
+	cat obj/Boot_Loader.o obj/kernel.bin > $(NAME)
 	qemu-system-i386 -fda $(NAME)
 
 clean:

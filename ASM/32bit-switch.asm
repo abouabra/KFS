@@ -1,5 +1,8 @@
-%include "ASM/32bit-gdt.asm"
-%include "ASM/Print_ASCII_32bit.asm"
+; %include "ASM/header.asm"
+; %include "ASM/32bit-gdt.asm"
+; %include "ASM/Print_ASCII_32bit.asm"
+
+KERNEL_OFFSET equ 0x1000 ; The same one we used when linking the kernel
 
 [bits 16]
 switch_to_pm:
@@ -23,3 +26,15 @@ init_pm:
 
     mov ebp, 0x90000 ; 6. update the stack right at the top of the free space
     mov esp, ebp
+    call BEGIN_PM ; 7. Call a well-known label with useful code
+
+[bits 32]
+BEGIN_PM:
+    mov ebx, MSG_PROTECTED_MODE
+    call print_pm ; Note that this will be written at the top left corner
+    call KERNEL_OFFSET ; Give control to the kernel
+    jmp $
+
+
+MSG_PROTECTED_MODE:
+    db '--------- WE ARE IN PROTECTED MODE -----------', 0
