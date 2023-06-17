@@ -26,8 +26,6 @@ jmp $ ; will never be called
 %include "ASM/Print_ASCII_32bit.asm"
 %include "ASM/32bit-switch.asm"
 
-; %include "ASM/Print_ASCII_32bit.asm"
-
 [bits 16]
 load_kernel:
     mov bx, MSG_LOAD_KERNEL
@@ -35,7 +33,7 @@ load_kernel:
     call print_nl_rm
 
     mov bx, KERNEL_OFFSET ; Read from disk and store in 0x1000
-    mov dh, 2
+    mov dh, 16
     mov dl, [BOOT_DRIVE]
     call disk_load
     ret
