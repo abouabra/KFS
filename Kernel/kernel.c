@@ -12,5 +12,6 @@ int main() {
     ft_dprintf(0,"u: %u\n",-1);
     ft_dprintf(0,"c: %c\n",'c');
     ft_dprintf(0,"p: %p\n",str);
+    ft_dprintf(0,"strlen: %d\n",strlen(str));
     return 0;
 }

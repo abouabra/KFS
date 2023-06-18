@@ -26,4 +26,22 @@ void	ft_dput_unsigned_nbr(unsigned int nb, int *tracker, int fd);
 void	ft_dput_hex_nbr(unsigned int nb, char x, int *tracker, int fd);
 void	ft_dput_adress(void *ptr, int *tracker, int fd);
 
+
+extern inline int strlen(const char *s)
+{
+    register int __res;
+    __asm__ volatile (
+        "cld\n\t"
+        "repne\n\t"
+        "scasb\n\t"
+        "notl %0\n\t"
+        "decl %0"
+        : "=c" (__res)
+        : "D" (s), "a" (0), "0" (0xffffffff)
+        : "memory"
+    );
+    return __res;
+}
+
+
 #endif
