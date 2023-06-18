@@ -15,9 +15,13 @@
 void	ft_dputchar(char c, int *tracker, int fd)
 {
 	// write(fd, &c, 1);
-	(void) fd;
-	(void) c;
-	ft_write(c);
+	char attr;
+
+	if(fd == 0)
+		attr = DEFAULT_PRINT_SCREEN;
+	else if(fd == 2)
+		attr = DEFAULT_PRINT_ERROR;
+	ft_write(attr,c);
 
 	// ft_print(arr);
 	(*tracker)++;

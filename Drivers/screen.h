@@ -14,9 +14,11 @@
 # define WHITE_ON_BLACK 0x0f
 # define RED_ON_BLUE 0x14
 # define YELLOW_ON_BLACK 0x0E
+# define BLUE_ON_RED 0x41
 
 # define DEFAULT_CLEAR_SCREEN RED_ON_BLUE
 # define DEFAULT_PRINT_SCREEN YELLOW_ON_BLACK
+# define DEFAULT_PRINT_ERROR BLUE_ON_RED
 
     // 0x0 - Black
     // 0x1 - Blue
@@ -35,9 +37,9 @@
     // 0xE - Yellow
     // 0xF - White
 
-void print_at(char *message, int col, int row);
-void ft_print(char *message);
-void ft_write(char c);
+void print_at(char *message, int col, int row, char attr);
+void print(char attr, char *message);
+void ft_write(char attr, char c);
 void clear_screen();
 
 

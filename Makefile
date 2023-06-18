@@ -1,8 +1,8 @@
 NAME = Mini_OS.bin
 
 Kernel_SRC = kernel.c
-Driver_SRC = ports.c screen.c
-CPU_SRC = idt.c isr.c
+Driver_SRC = ports.c screen.c keyboard.c
+CPU_SRC = idt.c isr.c timer.c
 
 Kernel_DIR = Kernel/
 DRIVER_DIR = Drivers/

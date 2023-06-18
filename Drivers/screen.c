@@ -9,7 +9,6 @@ int put_char(char c, int col, int row, char attr);
 int get_offset(int col, int row);
 int get_offset_row(int offset);
 int get_offset_col(int offset);
-int handle_scrolling(int cursor_offset);
 
 /**********************************************************
  * Public Kernel API functions                            *
@@ -19,7 +18,10 @@ int handle_scrolling(int cursor_offset);
  * Print a message on the specified location
  * If col, row, are negative, we will use the current offset
  */
-void print_at(char *message, int col, int row) {
+
+// DEFAULT_PRINT_SCREEN
+void print_at(char *message, int col, int row, char attr)
+{
     /* Set cursor if col/row are negative */
     int offset;
     if (col >= 0 && row >= 0)
@@ -33,24 +35,24 @@ void print_at(char *message, int col, int row) {
     /* Loop through message and print it */
     int i = 0;
     while (message[i] != 0) {
-        offset = put_char(message[i++], col, row, DEFAULT_PRINT_SCREEN);
+        offset = put_char(message[i++], col, row, attr);
         /* Compute row/col for next iteration */
         row = get_offset_row(offset);
         col = get_offset_col(offset);
     }
 }
 
-void ft_write(char c)
+void ft_write(char attr, char c)
 {
     char arr[2];
 	arr[0] = c;
 	arr[1] = 0;
-    print_at(arr, -1, -1);
+    print_at(arr, -1, -1, attr);
 }
 
-void ft_print(char *message)
+void print(char attr, char *message)
 {
-    print_at(message, -1, -1);
+    print_at(message, -1, -1, attr);
 }
 
 
@@ -74,7 +76,7 @@ int put_char(char c, int col, int row, char attr) {
     /* Error control: print a red 'E' if the coords aren't right */
     if (col >= MAX_COLS || row >= MAX_ROWS) {
         vidmem[2*(MAX_COLS)*(MAX_ROWS)-2] = 'E';
-        vidmem[2*(MAX_COLS)*(MAX_ROWS)-1] = RED_ON_BLUE;
+        vidmem[2*(MAX_COLS)*(MAX_ROWS)-1] = DEFAULT_PRINT_ERROR;
         return get_offset(col, row);
     }
 
@@ -91,8 +93,28 @@ int put_char(char c, int col, int row, char attr) {
         offset += 2;
     }
 
-    offset = handle_scrolling(offset);
+    // offset = handle_scrolling(offset);
     
+   if (offset >= MAX_ROWS * MAX_COLS * 2) {
+        int i;
+        for (i = 1; i < MAX_ROWS; i++)
+        {
+            char *dst = (get_offset(0, i-1) + (char *)VIDEO_ADDRESS);
+            char *src = (get_offset(0, i) + (char *)VIDEO_ADDRESS);
+            dst = ft_memcpy(dst,src,MAX_COLS * 2);
+        }
+        /* Blank last line */
+        char *last_line = get_offset(0, MAX_ROWS-1) + (char *)VIDEO_ADDRESS;
+        for (i = 0; i < MAX_COLS * 2; i+=2)
+        {
+            last_line[i] = 0;
+            last_line[i + 1] = DEFAULT_CLEAR_SCREEN;
+        }
+
+        offset -= 2 * MAX_COLS;
+    }
+
+
     set_cursor_offset(offset);
     return offset;
 }
@@ -143,32 +165,4 @@ int get_offset_row(int offset)
 int get_offset_col(int offset)
 {
     return (offset - (get_offset_row(offset)*2*MAX_COLS))/2;
-}
-
-int handle_scrolling(int cursor_offset)
-{
-    // If the cursor is within the screen , return it unmodified .
-    if ( cursor_offset < MAX_ROWS * MAX_COLS *2)
-        return cursor_offset ;
-
-    /* Shuffle the rows back one . */
-    for (int i = 1; i < MAX_ROWS; i ++) {
-        ft_memcpy((get_offset(0,i) + (char *)VIDEO_ADDRESS),
-            (get_offset(0,i-1) + (char *)VIDEO_ADDRESS),
-            MAX_COLS *2
-        );
-    }
-
-    /* Blank the last line by setting all bytes to 0 */
-    char *last_line =  (char *) (get_offset(0, MAX_ROWS - 1) + ( char *)VIDEO_ADDRESS);
-    
-    for (int i =0; i < MAX_COLS *2; i ++) {
-        last_line [i] = 0;
-    }
-
-    // Move the offset back one row , such that it is now on the last
-    // row , rather than off the edge of the screen .
-    cursor_offset -= 2* MAX_COLS ;
-    // Return the updated cursor position .
-    return cursor_offset ;
 }
