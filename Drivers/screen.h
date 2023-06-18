@@ -41,6 +41,6 @@ void print_at(char *message, int col, int row, char attr);
 void print(char attr, char *message);
 void ft_write(char attr, char c);
 void clear_screen();
-
+void print_backspace();
 
 #endif
