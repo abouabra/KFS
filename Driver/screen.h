@@ -37,6 +37,7 @@
 
 void print_at(char *message, int col, int row);
 void ft_print(char *message);
+void ft_write(char c);
 void clear_screen();
 
 

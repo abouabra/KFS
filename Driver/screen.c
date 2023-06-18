@@ -40,7 +40,16 @@ void print_at(char *message, int col, int row) {
     }
 }
 
-void ft_print(char *message) {
+void ft_write(char c)
+{
+    char arr[2];
+	arr[0] = c;
+	arr[1] = 0;
+    print_at(arr, -1, -1);
+}
+
+void ft_print(char *message)
+{
     print_at(message, -1, -1);
 }
 

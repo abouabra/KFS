@@ -13,8 +13,9 @@ C_OBJ += $(addprefix $(OBJ_DIR), $(Driver_SRC:.c=.o))
 all: $(NAME)
 
 kernel: $(C_OBJ) asm
+	make -C ft_libft
 	echo $(C_OBJ)
-	i386-elf-ld -o obj/kernel.bin -Ttext 0x1000 obj/kernel_entry.o $(C_OBJ) --oformat binary
+	i386-elf-ld -o obj/kernel.bin -Ttext 0x1000 obj/kernel_entry.o $(C_OBJ) ft_libft/libft.a --oformat binary
 
 $(OBJ_DIR)%.o: $(Kernel_DIR)%.c
 	mkdir -p obj/
