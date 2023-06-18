@@ -60,6 +60,8 @@ void print_backspace()
     int offset = get_cursor_offset()-2;
     int row = get_offset_row(offset);
     int col = get_offset_col(offset);
+    ft_dprintf(1, "\nMAX: %d\n", MAX_COLS);
+    ft_dprintf(1, "\ncol: %d\n",col);
     put_char(0x08, col, row, WHITE_ON_BLACK);
 }
 
