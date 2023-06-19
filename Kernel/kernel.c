@@ -1,46 +1,39 @@
 #include "../Drivers/screen.h"
 #include "../Drivers/keyboard.h"
 #include "../libft/includes/libft.h"
-#include "../cpu/isr.h"
-#include "../cpu/timer.h"
+#include "../CPU/isr.h"
+#include "../CPU/timer.h"
+#include "../Memory/paging.h"
+#include "kernel.h"
 
-// int main() {
-//     isr_install();
-//     asm volatile("sti");
-//     init_timer(50);
-//     init_keyboard();
-//     clear_screen();
-//     char *str = "Test Printf";
-//     ft_dprintf(1,"str: %s %s %s\n",str,str,str);
-//     ft_dprintf(1,"num: %d\n",19);
-//     ft_dprintf(1,"hex: %x || %X\n",10,10);
-//     ft_dprintf(1,"u: %u\n",-1);
-//     ft_dprintf(1,"c: %c\n",'c');
-//     ft_dprintf(1,"p: %p\n",str);
-//     ft_dprintf(1,"strlen: %d\n",ft_strlen(str));
-
-//     /* Test the interrupts */
-//     __asm__ __volatile__("int $0");
-//     __asm__ __volatile__("int $1");
-
-//     return 0;
-// }
 int main() {
     isr_install();
     irq_install();
+    // Nullify all the interrupt handlers.
+    // memset(&interrupt_handlers, 0, sizeof(isr_t)*256);
+    initialise_paging();
     clear_screen();
 
-    ft_dprintf(1, "Type something, it will go through the kernel\n"
-        "Type END to halt the CPU\n> ");
+    ft_dprintf(1, "Welcome To mini OS\n"
+        "Enteract with shell\n"
+        "Have Fun\n");
+    ft_dprintf(1, "%s",PS1);
+
+    // monitor_write("Hello, paging world!\n");
+    // u32int *ptr = (u32int*)0xA0000000;
+    // u32int do_page_fault = *ptr;
     return 0;
 }
+
 void user_input(char *input)
 {
-    // if (strcmp(input, "END") == 0) {
-    //     kprint("Stopping the CPU. Bye!\n");
-    //     asm volatile("hlt");
-    // }
-    ft_dprintf(1, "You said: ");
-    ft_dprintf(1, input);
-    ft_dprintf(1, "\n> ");
+    if(input[0])
+        ft_dprintf(1, "You entered: %s\n",input);
+    if(!ft_strncmp("clear",input,-1))
+        clear_screen();
+    else if(!ft_strncmp("exit",input,-1))
+    {
+        asm volatile("hlt");
+    }
+    ft_dprintf(1, "%s",PS1);
 }

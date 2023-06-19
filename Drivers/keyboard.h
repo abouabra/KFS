@@ -1,3 +1,3 @@
-#include "../cpu/types.h"
+#include "../CPU/types.h"
 
 void init_keyboard();

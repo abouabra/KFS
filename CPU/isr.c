@@ -74,6 +74,7 @@ void isr_install() {
     set_idt_gate(47, (u32)irq15);
 
     set_idt(); // Load with ASM
+    // ft_memset(&interrupt_handlers, 0, sizeof(isr_t)*256);
 }
 
 void isr_handler(registers_t r) {
@@ -139,6 +140,7 @@ void irq_handler(registers_t r) {
 
 void irq_install()
 {
+
     /* Enable interruptions */
     asm volatile("sti");
     /* IRQ0: timer */

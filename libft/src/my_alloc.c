@@ -40,9 +40,9 @@ void	*my_alloc(size_t size)
 	void	*str;
 	(void) size;
 	str = NULL;
-	// str = malloc(size);
-	// if (!str)
-	// 	return (0);
+	// str = kmalloc(size);
+	if (!str)
+		return (0);
 	// ft_memset(str, 0, size);
 	// garbage_collector(str,0);
 	return (str);

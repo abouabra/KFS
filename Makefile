@@ -3,16 +3,21 @@ NAME = Mini_OS.bin
 Kernel_SRC = kernel.c
 Driver_SRC = ports.c screen.c keyboard.c
 CPU_SRC = idt.c isr.c timer.c
+MEM_SRC = kmalloc.c paging.c
 
 Kernel_DIR = Kernel/
 DRIVER_DIR = Drivers/
-CPU_DIR = cpu/
+CPU_DIR = CPU/
+MEM_DIR = Memory/
 
 OBJ_DIR = obj/
 
 C_OBJ = $(addprefix $(OBJ_DIR), $(Kernel_SRC:.c=.o))
 C_OBJ += $(addprefix $(OBJ_DIR), $(Driver_SRC:.c=.o))
 C_OBJ += $(addprefix $(OBJ_DIR), $(CPU_SRC:.c=.o))
+C_OBJ += $(addprefix $(OBJ_DIR), $(MEM_SRC:.c=.o))
+
+FLAGS = -Werror
 
 all: $(NAME)
 
@@ -23,22 +28,26 @@ kernel: $(C_OBJ) asm
 
 $(OBJ_DIR)%.o: $(Kernel_DIR)%.c
 	mkdir -p obj/
-	i386-elf-gcc -Wall -Wextra -Werror -ffreestanding -c $< -o $@
+	i386-elf-gcc $(FLAGS) -ffreestanding -c $< -o $@
 
 $(OBJ_DIR)%.o: $(DRIVER_DIR)%.c 
 	mkdir -p obj/
-	i386-elf-gcc -Wall -Wextra -Werror -ffreestanding -c $< -o $@
+	i386-elf-gcc $(FLAGS) -ffreestanding -c $< -o $@
 
 
 $(OBJ_DIR)%.o: $(CPU_DIR)%.c 
 	mkdir -p obj/
-	i386-elf-gcc -Wall -Wextra -Werror -ffreestanding -c $< -o $@
+	i386-elf-gcc $(FLAGS) -ffreestanding -c $< -o $@
 
-asm: ASM/Boot_Loader.asm ASM/kernel_entry.asm cpu/interrupt.asm
+$(OBJ_DIR)%.o: $(MEM_DIR)%.c 
+	mkdir -p obj/
+	i386-elf-gcc $(FLAGS) -ffreestanding -c $< -o $@
+
+asm: ASM/Boot_Loader.asm ASM/kernel_entry.asm CPU/interrupt.asm
 	mkdir -p obj/
 	nasm -f bin ASM/Boot_Loader.asm -o obj/Boot_Loader.o
 	nasm -f elf ASM/kernel_entry.asm -o obj/kernel_entry.o
-	nasm -f elf cpu/interrupt.asm -o obj/interrupt.o
+	nasm -f elf CPU/interrupt.asm -o obj/interrupt.o
 
 $(NAME): kernel
 	cat obj/Boot_Loader.o obj/kernel.bin > $(NAME)
