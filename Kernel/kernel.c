@@ -3,15 +3,15 @@
 #include "../libft/includes/libft.h"
 #include "../CPU/isr.h"
 #include "../CPU/timer.h"
-#include "../Memory/paging.h"
+#include "../Memory/kmalloc.h"
 #include "kernel.h"
 
 int main() {
     isr_install();
     irq_install();
-    // Nullify all the interrupt handlers.
-    // memset(&interrupt_handlers, 0, sizeof(isr_t)*256);
-    initialise_paging();
+
+    kmalloc(10);
+
     clear_screen();
 
     ft_dprintf(1, "Welcome To mini OS\n"
@@ -34,6 +34,12 @@ void user_input(char *input)
     else if(!ft_strncmp("exit",input,-1))
     {
         asm volatile("hlt");
+    }
+    else if(!ft_strncmp("malloc",input,-1))
+    {
+        char **arr = ft_split("Hello World How are You ?",' ');
+        for(int i= 0; arr[i]; i++)
+            ft_dprintf(1, "%s\n",arr[i]);
     }
     ft_dprintf(1, "%s",PS1);
 }
