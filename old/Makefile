@@ -52,6 +52,7 @@ asm: ASM/Boot_Loader.asm ASM/kernel_entry.asm CPU/interrupt.asm
 $(NAME): kernel
 	cat obj/Boot_Loader.o obj/kernel.bin > $(NAME)
 	qemu-system-i386 -fda $(NAME)
+	
 
 clean:
 	make -C libft clean
